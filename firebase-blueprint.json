@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "User account and entrance test preparation progress",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "selectedUniversity": { "type": "string" },
+        "targetUniversities": { "type": "array", "items": { "type": "string" } },
+        "mcqsAttempted": { "type": "number" },
+        "correctAnswers": { "type": "number" },
+        "streakDays": { "type": "number" },
+        "lastActiveDate": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "bookmarks": {
+      "title": "Bookmarked MCQs",
+      "description": "MCQs saved by user for review",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "mcqId": { "type": "string" },
+        "question": { "type": "string" },
+        "subject": { "type": "string" },
+        "university": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "mcqId"]
+    },
+    "activities": {
+      "title": "Activity Logs",
+      "description": "User practice sessions, mock tests, and AI query logs",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "university": { "type": "string" },
+        "score": { "type": "number" },
+        "total": { "type": "number" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "title", "type"]
+    },
+    "mockTests": {
+      "title": "Mock Test Results",
+      "description": "Comprehensive user mock exam records and analytics",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "university": { "type": "string" },
+        "subject": { "type": "string" },
+        "totalQuestions": { "type": "number" },
+        "difficulty": { "type": "string" },
+        "correctAnswers": { "type": "number" },
+        "wrongAnswers": { "type": "number" },
+        "skippedQuestions": { "type": "number" },
+        "score": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "timeSpentSeconds": { "type": "number" },
+        "weakTopics": { "type": "array", "items": { "type": "string" } },
+        "strongTopics": { "type": "array", "items": { "type": "string" } },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "university", "totalQuestions", "score"]
+    },
+    "aiChats": {
+      "title": "AI Tutor Chat Sessions",
+      "description": "User chat sessions and message logs with EntryAce AI Tutor",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "title"]
+    }
+  }
+}
