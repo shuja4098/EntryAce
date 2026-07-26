@@ -5,7 +5,7 @@ dotenv.config({
   path: path.resolve(process.cwd(), ".env")
 });
 
-console.log("Using API key:", process.env.GROQ_API_KEY?.slice(0, 10));
+console.log("Using API key:", process.env.GROQ_API_KEY ? "LOADED" : "MISSING");
 
 console.log("Current folder:", process.cwd());
 console.log("API KEY:", process.env.GROQ_API_KEY ? "FOUND" : "MISSING");
