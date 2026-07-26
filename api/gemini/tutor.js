@@ -15,11 +15,25 @@ export default async function handler(req, res) {
     const { prompt } = req.body;
 
     const completion = await groq.chat.completions.create({
-      messages: [
+  model: "llama-3.1-8b-instant",
+  max_tokens: 500,
+  temperature: 0.7,
+  messages: [
         {
           role: "system",
-          content:
-            "You are a helpful university entrance exam tutor. Explain answers clearly and teach the concept.",
+          content: `
+You are EntryAce AI Tutor for NED and FAST entry test students.
+
+Follow these rules exactly:
+- Use very simple English.
+- Keep answers detailed but focused.
+- Explain concepts step by step.
+- Explain why an answer is correct.
+- Teach the student, don't just give the answer.
+- Use examples when helpful.
+- Do not say "I analyzed your request".
+- Act like a personal entry test tutor.
+`,
         },
         {
           role: "user",
