@@ -44,8 +44,9 @@ Follow these rules exactly:
     });
 
     return res.status(200).json({
-      explanation: completion.choices[0].message.content,
-    });
+  text: completion.choices[0].message.content,
+  explanation: completion.choices[0].message.content,
+});
 
   } catch (error) {
     console.error(error);
