@@ -5,14 +5,14 @@ dotenv.config({
   path: path.resolve(process.cwd(), ".env")
 });
 
-console.log("Using API key:", process.env.GEMINI_API_KEY?.slice(0, 10));
+console.log("Using API key:", process.env.GROQ_API_KEY?.slice(0, 10));
 
 console.log("Current folder:", process.cwd());
-console.log("API KEY:", process.env.GEMINI_API_KEY ? "FOUND" : "MISSING");
+console.log("API KEY:", process.env.GROQ_API_KEY ? "FOUND" : "MISSING");
 
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 
 const app = express();
 const PORT = 3000;
@@ -28,21 +28,16 @@ app.post("/api/gemini/tutor", async (req, res) => {
       return res.status(400).json({ error: "Prompt or conversation history is required" });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       return res.status(500).json({ 
-        error: "GEMINI_API_KEY environment variable is missing on server." 
+        error: "GROQ_API_KEY environment variable is missing on server."
       });
     }
 
-    const ai = new GoogleGenAI({
-      apiKey,
-      httpOptions: {
-        headers: {
-          "User-Agent": "aistudio-build",
-        },
-      },
-    });
+    const groq = new Groq({
+  apiKey,
+});
 
 const systemInstruction = `
 You are EntryAce AI Tutor, an expert tutor for NED, FAST, and other university entrance tests.
@@ -125,38 +120,40 @@ let contentsPayload: any = finalPrompt;
       contentsPayload = formattedHistory;
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: prompt,
-      config: {
-  systemInstruction: systemContext || `
+    const completion = await groq.chat.completions.create({
+  model: "llama-3.1-8b-instant",
+  messages: [
+    {
+      role: "system",
+      content: systemContext || `
 You are EntryAce AI Tutor for NED and FAST entry test students.
 
 Follow these rules exactly:
 - Use very simple English.
 - Keep answers short (100-150 words).
 - Never use headings like "Concept", "Reasoning", or "Solution".
-- Never use Markdown such as **, ##, ###, or bullet points.
-- Never use LaTeX like $...$.
-- Explain in a friendly teacher's style.
-- Show only the important calculation steps.
-- Do not write long introductions.
-- End with: Answer: <correct option>.
-`,
-temperature: 0.3,
-maxOutputTokens: 800,
-},
-    });
-console.log("========== GEMINI RESPONSE ==========");
-console.log(response.text);
+`
+    },
+    {
+      role: "user",
+      content: prompt,
+    },
+  ],
+});
+console.log("========== GROQ RESPONSE ==========");
+console.log(completion.choices[0].message.content);
 console.log("====================================");
-    return res.json({ text: response.text });
-  } catch (err: any) {
-    console.error("Gemini API server error:", err);
-    return res.status(500).json({ 
-      error: err.message || "Failed to generate AI response from Gemini" 
-    });
-  }
+
+return res.json({ 
+  text: completion.choices[0].message.content 
+});
+
+} catch (err: any) {
+  console.error("Groq API server error:", err);
+  return res.status(500).json({ 
+    error: err.message || "Failed to generate AI response from Groq" 
+  });
+}
 });
 
 // Vite middleware setup for development vs production

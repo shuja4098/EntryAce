@@ -30,10 +30,10 @@ GEMINI_API_KEY="your_gemini_api_key_here"
 The backend server initialisation uses `@google/genai`:
 
 ```typescript
-import { GoogleGenAI } from '@google/genai';
+import Groq from "groq-sdk";
 
-const ai = new GoogleGenAI({ 
-  apiKey: process.env.GEMINI_API_KEY 
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 // Example model call:

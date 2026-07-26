@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -8,23 +8,33 @@ export default async function handler(req, res) {
   }
 
   try {
-    const ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
+    const groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
     });
 
     const { prompt } = req.body;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a helpful university entrance exam tutor. Explain answers clearly and teach the concept.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      model: "llama-3.1-8b-instant",
     });
 
     return res.status(200).json({
-      explanation: response.text,
+      explanation: completion.choices[0].message.content,
     });
 
   } catch (error) {
-    console.error("Gemini Error:", error);
+    console.error(error);
 
     return res.status(500).json({
       error: error.message,
